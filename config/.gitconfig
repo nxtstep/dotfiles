@@ -1,0 +1,31 @@
+[color]
+	ui = auto
+[color "branch"]
+	current = red reverse
+	local = cyan
+	remote = green
+[color "diff"]
+    meta = yellow
+    frag = cyan
+    old = red bold
+    new = green
+    plain = white
+
+[core]
+	quotepath = false
+	excludesfile = ~/.gitignore
+[push]
+	default = matching
+[diff]
+[include]
+	path = ~/.gitconfig.alias
+[gpg "x509"]
+	program = smimesign
+[gpg]
+	format = x509
+[alias]
+	opendiff = difftool --no-prompt --tool opendiff --dir-diff
+[credential]
+	helper = osxkeychain
+[init]
+	defaultBranch = main

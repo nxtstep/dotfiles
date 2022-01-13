@@ -1,0 +1,69 @@
+[alias]
+	up = !git pull --rebase --prune $@ && git submodule update --init --recursive
+	co = checkout
+	st = status -s
+	ci = commit -S
+	#ci = commit
+	cm = commit -S -m
+	cam = commit -S -a -m
+	#cm = commit -m
+	ls = log --oneline
+	unstage = reset HEAD --
+	discard = checkout --
+	
+	# info
+	la=!git config -l | grep alias | cut -c 7-
+	conflicts=!git diff --name-only --diff-filter=U
+
+	# Last commit log message
+	lc = log -n 1
+
+	# Detached heads
+	detached = !git log --graph --decorate $(git rev-list -g --all)
+
+	# Get commit hash
+	sha = rev-parse HEAD
+	csha = "!f() { git sha | awk '{ print $0 }' | tr -d '\n' | pbcopy; }; f"
+
+	# Commit all unstaged (tracked) files onto last commit
+	caa = commit -S -a --amend -C HEAD
+	#caa = commit -a --amend -C HEAD
+	# Commit all staged changes onto last commit	
+	cia = commit -S --amend -C HEAD
+	#cia = commit --amend -C HEAD
+
+	# Save and WIP
+	save = !git add -A && git commit -m 'SAVEPOINT'
+  	wip = !git add -u && git commit -m "WIP"
+	undo = reset HEAD~1 --mixed
+
+	# Copy current branch name to clipboard
+	cb = "!f() { git branch | grep \"*\" | awk '{ print $2 }' | tr -d '\n' | pbcopy; }; f"
+	# Print (only) current branch name
+	br = "!f() { git branch | grep \"*\" | awk '{ print $2 }'; }; f" 
+
+	# Wipe local changes but save first to 'hidden' SAVEPOINT
+	wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+
+	# Cleanup (local) merged branches
+	bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs git branch -d; }; f"
+	# After PR merge we're done with our branch - so it's done
+	bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f"
+
+	# List subtrees
+	ls-subtrees = !"git log | grep git-subtree-dir | awk '{ print $2 }'"
+	
+	# Show commits per commiter
+	heroes = "!f() { git-heroes.sh; }; f"
+
+	# Manifest
+	manifest = "!f() { git ls-tree -r HEAD | awk '{print $4}' | sort | uniq; }; f"
+
+	# Delete old and unmerged branches
+	dob = "!f() { \
+		for name in $(git branch | sed /\\*/d); do \
+		  if [[ -z "$(git log -1 --since='1 week ago' -s \"${name}\")" ]]; then \
+		    echo "branchname: $name"; \
+		  fi \
+		done \
+	}; f"
